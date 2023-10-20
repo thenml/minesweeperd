@@ -1,0 +1,60 @@
+#container {
+	margin: auto;
+	max-width: 90%;
+	max-height: 70vh;
+	width: fit-content;
+	overflow: hidden;
+	/* user-select: none; */
+}
+#container canvas {
+	image-rendering: pixelated;
+}
+
+footer {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 0.1;
+}
+footer:hover {
+	opacity: 1;
+}
+
+
+
+
+
+@keyframes dummy-anim {
+	from { }
+	to { }
+}
+
+
+.tile img.opentile-anim {
+	position: absolute;
+	animation: open-tile calc(1s * var(--animation-speed)) cubic-bezier(0,.1,.25,1);
+}
+@keyframes open-tile {
+	from { transform: translateY(0) rotateZ(calc(var(--rng) * 90deg)) }
+	to { transform: translateY(-100%) rotateZ(calc(var(--rng) * 180deg + 15deg)); opacity: 0 }
+}
+
+.tile img.placeflag-anim {
+	position: absolute;
+	animation: place-flag cubic-bezier(0,.1,.25,1) calc(0.5s * var(--animation-speed));
+}
+.tile img.removeflag-anim {
+	position: absolute;
+	animation: place-flag reverse cubic-bezier(0,.9,.75,1) calc(0.5s * var(--animation-speed));
+}
+
+@keyframes place-flag {
+	from { transform: translateY(-33%); opacity: 0 }
+	to { transform: translateY(0) }
+}
+
+.tile img.explosion-anim {
+	position: absolute;
+	animation: dummy-anim linear calc(0.68s * var(--animation-speed));
+}

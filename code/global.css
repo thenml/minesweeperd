@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    font-family: Rubik;
+    color: white;
+    background-color: #404040;
+    width: 80%;
+    margin: auto;
+}
+@media (max-width: 1000px) {
+    body {
+        width: 90%;
+    }
+}
+footer {
+    margin-top: max(25%, 150px);
+    text-align: center;
+}
+
+:link { text-decoration: none; color: skyblue }
+:visited { color: violet }
+:link:hover { text-decoration: underline }

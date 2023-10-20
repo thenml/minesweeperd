@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html style="font-size: 16px; overflow: hidden;">
+
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta charset="utf-8">
+
+	<title>minesweeperd</title>
+
+	<link rel="stylesheet" href="/code/global.css" media="screen">
+	<link rel="stylesheet" href="/code/css/sweeper.css" media="screen">
+	<script src="https://unpkg.com/pixi.js@7.x/dist/pixi.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.4/howler.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/20.0.0/tween.umd.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="/code/global.js"></script>
+
+	<!-- <script src="/code/js/mine/utils.js"></script> -->
+</head>
+<style id="mine-theme">
+</style>
+<body style="text-align: center; overflow: hidden;">
+	<img style="max-width: 10%; max-height: 10%; margin: 3%;" src="https://media.tenor.com/v9E1MSawA4kAAAAC/monkey-bloons-td6.gif">
+	<div id="container" style="--size: 8;">
+	</div>
+	<button onclick="camera.hidden = false; genTempBoard(); this.remove();">start</button>
+	<p id="debug-info"></p>
+	<button onclick="genTempBoard()">reset</button>
+	<button onclick="genBasicBoard()">new</button>
+	<button onclick="genDailyBoard()">daily</button>
+	<div>
+		<input type="number" id="inp-width" min="10" max="40" placeholder="20">
+		<input type="number" id="inp-height" min="10" max="40" placeholder="20">
+	</div>
+	<footer>-nml<br>sound effects from <a href="https://www.zapsplat.com">https://www.zapsplat.com</a></footer>
+</body>
+<script src="/code/js/sweeper.js"></script>
+<script src="/code/js/mine/animation.js"></script>
+<script src="/code/js/mine/controls.js"></script>
+</html>
