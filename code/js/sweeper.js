@@ -3,14 +3,14 @@ const debug_info = document.getElementById('debug-info');
 
 let userConfig = {
 	selectedTileset: 'generic_colored', // todo: combine tileset into one generated file
-	holdDelay: 100,
+	holdDelay: 150,
 	openDelay: 60,
 	showBackTiles: false,
 	invisibleZero: true,
 	animSpeed: 1.0,
 }
 
-const autoExtend = true;
+let autoExtend = false;
 
 function tileTexture(tile) {
 	return `/assets/mine/tiles/${userConfig.selectedTileset}/${tile}`;
@@ -40,9 +40,12 @@ app.stage.addChild(tilesContainer);
 const animationContainer = new PIXI.Container();
 app.stage.addChild(animationContainer);
 
+
 app.interactiveChildren = false;
 
 let grid = {};
+let chunks = {};
+let generatingChunks = {idle: true, waitList: []};
 
 let cameraX = 0;
 let cameraY = 0;
@@ -85,10 +88,6 @@ function drawTile(tile, tileSprite) {
 
 function getTileAt(x, y) { return (grid[`${y}`] ?? {})[`${x}`]; }
 function getChunkAt(x, y) { return {x: Math.floor(x / chunkWidth), y: Math.floor(y / chunkHeight)}; }
-function expandAt(chunkX, chunkY) {
-	genBasicBoard({x: chunkX * chunkWidth, y: chunkY * chunkHeight, border: false, expand: true});
-	updateVisibleTiles();
-}
 function getScreenPos(x, y, centered) {  return {
 		screenX: (x + (centered ? 0.5 : 0)) * tileSize - cameraX,
 		screenY: (y + (centered ? 0.5 : 0)) * tileSize - cameraY

@@ -120,13 +120,13 @@ function nearestTiles(tile) {
 
 	return tiles;
 }
-function expandAround(x, y) {
+function expandBoardAroundTile(x, y) {
 	const { x: chunkX, y: chunkY} = getChunkAt(x, y);
 	
-	for (j = -1; j < 2; j++) {
-		for (i = -1; i < 2; i++) {
+	for (let j = -1; j < 2; j++) {
+		for (let i = -1; i < 2; i++) {
 			if (!getTileAt((chunkX + i) * chunkWidth, (chunkY + j) * chunkHeight))
-				expandAt(chunkX + i, chunkY + j);
+				genExtentionBoardAt(chunkX + i, chunkY + j);
 		}
 	}
 }
@@ -136,7 +136,8 @@ function expandAround(x, y) {
 function leftClick(tile, startTile) {
 	if (dragState >= 1 || !tile) return;
 	if (tile.state >= 2) return; // exploded or flag
-	// expandAround(tile.x, tile.y);
+	if (autoExtend)
+		expandBoardAroundTile(tile.x, tile.y);
 
 	if (tile.data === 0 && tile.state != 0) { // 0 tile recursion
 		tile.state = 0;

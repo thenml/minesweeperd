@@ -10,8 +10,13 @@ function parseMinesweeperString(minesweeperString, options) {
 	const rows = minesweeperString.split('/'); // Split the string into rows
 	rows.pop(); // Remove the last empty row
 
-	chunkWidth = rows[0].length;
-	chunkHeight = rows.length;
+	if (options.extend) {
+		chunkWidth += 2;
+		chunkHeight += 2;
+	} else {
+		chunkWidth = rows[0].length;
+		chunkHeight = rows.length;
+	}
 
 	let firstTiles = [];
 	let minX = chunkWidth;
@@ -21,16 +26,24 @@ function parseMinesweeperString(minesweeperString, options) {
 	for (let y = 0; y < chunkWidth; y++) {
 		for (let x = 0; x < chunkHeight; x++) {
 			let c = rows[y][x];
-			const tile = { state: 1 };
+			let tile;
+			if (options.extend && (x === 0 || x === chunkWidth - 1 || y === 0 || y === chunkHeight - 1))
+				if (c === '-') continue
+				else tile = getTileAt(x + options.x, y + options.y);
+			if (!tile) tile = { state: 1 };
 
 			if ("sabcdefg".includes(c)) {
-				if (minX > x) minX = x;
-				if (minY > y) minY = y;
-				if (maxX < x) maxX = x;
-				if (maxY < y) maxY = y;
-				c = "sabcdefg".indexOf(c);
-				tile.state = 0;
-				firstTiles.push({ x, y });
+				if (options.extend)
+					c = "sabcdefg".indexOf(c);
+				else {
+					if (minX > x) minX = x;
+					if (minY > y) minY = y;
+					if (maxX < x) maxX = x;
+					if (maxY < y) maxY = y;
+					c = "sabcdefg".indexOf(c);
+					tile.state = 0;
+					firstTiles.push({ x, y });
+				}
 			}
 			if (parseInt(c) >= 0)
 				tile.data = parseInt(c);
@@ -58,6 +71,11 @@ function parseMinesweeperString(minesweeperString, options) {
 		}
 	}
 
+	if (options.extend) {
+		chunkWidth -= 2;
+		chunkHeight -= 2;
+	}
+
 	if (options.init) {
 		cameraX = Math.floor((maxX + minX) / 2) * tileSize - camera.offsetWidth / 2;
 		cameraY = Math.floor((maxY + minY) / 2) * tileSize - camera.offsetHeight / 2;
@@ -71,18 +89,19 @@ function parseMinesweeperString(minesweeperString, options) {
 	}
 }
 function resetBoard() {
+	autoExtend = false;
 	grid = {};
+	chunks = {};
 	tilesContainer.removeChildren();
 	animationContainer.removeChildren();
 }
-async function genBasicBoard(options) {
+function genBasicBoard(options) {
 	if (options?.init)
 		resetBoard();
 	const w = parseInt(document.getElementById('inp-width').value) || 20;
 	const h = parseInt(document.getElementById('inp-height').value) || 20;
-	const n = Math.floor(((w + h) / 2) ** 1.6);
-	const ap = options?.expand ? encodeBoard(options.x, options.y) : '';
-	const url = `https://api.nmll.site/v1/minesweeper/generate?w=${w}&h=${h}&n=${n}&ap=${ap}`;
+	const n = Math.floor(((w + h) / 2) ** 1.5);
+	const url = `https://api.nmll.site/v1/minesweeper/generate?w=${w}&h=${h}&n=${n}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
@@ -108,6 +127,25 @@ function genTempBoard() {
 	);
 	updateVisibleTiles();
 }
+function genInfiniteBoard() {
+	resetBoard();
+	autoExtend = true;
+	const url = `https://api.nmll.site/v1/minesweeper/generate?w=20&h=20&n=60`;
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			parseMinesweeperString(json.sweeper, { init: true, border: false });
+			updateVisibleTiles();
+			expandBoardAroundTile(0, 0);
+		});
+}
+
+function genExtentionBoardAt(chunkX, chunkY) {
+	if (!chunks[chunkY]) chunks[chunkY] = {};
+	if (chunks[chunkY][chunkX]?.state) return;
+	chunks[chunkY][chunkX] = { state: "gen" }
+	generatingChunks.waitList.push({ chunkX, chunkY });
+}
 
 
 function encodeBoardBorder(chunkX, chunkY) {
@@ -117,22 +155,46 @@ function encodeBoardBorder(chunkX, chunkY) {
 			if (x === -1 || x === chunkWidth || y === -1 || y === chunkHeight) {
 				const tile = getTileAt(x + chunkX * chunkWidth, y + chunkY * chunkHeight);
 				switch (tile?.data) {
-					case undefined: result += " "; break;
+					case undefined: result += "-"; break;
 					case "mine": result += "*"; break;
 					case "q": result += "q"; break;
 					case "wall": result += "-"; break;
 					default:
 						let c = tile.data;
-						if (tile.state === 0)
-							c = "sabcdefg"[c];
+						// if (tile.state === 0)
+						c = "sabcdefg"[c];
 						result += c;
 						break;
 				}
+			} else if (x === 0 || x === chunkWidth - 1 || y === 0 || y === chunkHeight - 1) {
+				let m = 0;
+				nearestTiles({ x: x + chunkX * chunkWidth, y: y + chunkY * chunkHeight }).forEach(el => {
+					if (el?.data === "mine") m++;
+				})
+				result += `${m}`;
 			} else {
-				result+=' '
+				result += '0'
 			}
 		}
-		result+='/'
+		result += '!'
 	}
 	return result;
 }
+
+app.ticker.add(() => {
+	if (generatingChunks.waitList.length > 0 && generatingChunks.idle) {
+		const { chunkX, chunkY } = generatingChunks.waitList.pop();
+		generatingChunks.idle = false;
+		const n = Math.floor(((chunkWidth + chunkHeight) / 2) ** 1.4);
+		const ap = encodeBoardBorder(chunkX, chunkY);
+		const url = `https://api.nmll.site/v1/minesweeper/generate?w=${chunkWidth + 2}&h=${chunkHeight + 2}&n=${n}&ap=${ap}`;
+		fetch(url, { method: "POST" })
+			.then(response => response.json())
+			.then(json => {
+				parseMinesweeperString(json.sweeper, { x: chunkX * chunkWidth - 1, y: chunkY * chunkHeight - 1, extend: true, border: false });
+				updateVisibleTiles();
+				chunks[chunkY][chunkX] = { state: "ready" }
+				generatingChunks.idle = true;
+			});
+	}
+})
