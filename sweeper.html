@@ -20,7 +20,7 @@
 <style id="mine-theme">
 </style>
 <body style="text-align: center; overflow: hidden;">
-	<img style="max-width: 10%; max-height: 10%; margin: 3% auto; display: block;" src="https://media.tenor.com/v9E1MSawA4kAAAAC/monkey-bloons-td6.gif">
+	<img style="height: 64px; margin: 24px auto; display: block;" src="https://media.tenor.com/v9E1MSawA4kAAAAC/monkey-bloons-td6.gif">
 	<button onclick="camera.parentElement.hidden = false; genTempBoard(); this.remove();">start</button>
 	<main>
 		<div class="settings">
@@ -30,7 +30,7 @@
 		<div class="settings">
 			<p id="debug-info"></p>
 			<button onclick="genTempBoard();">reset</button>
-			<button onclick="genBasicBoard({init: true, border:false});">new</button>
+			<button onclick="genBasicBoard({init: true});">new</button>
 			<button onclick="genDailyBoard();">daily</button>
 			<button onclick="genInfiniteBoard();">infinite</button>
 			<button onclick="camera.parentElement.requestFullscreen()">[+]</button>

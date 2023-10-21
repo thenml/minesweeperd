@@ -100,8 +100,7 @@ function genBasicBoard(options) {
 		resetBoard();
 	const w = parseInt(document.getElementById('inp-width').value) || 20;
 	const h = parseInt(document.getElementById('inp-height').value) || 20;
-	const n = Math.floor(((w + h) / 2) ** 1.5);
-	const url = `https://api.nmll.site/v1/minesweeper/generate?w=${w}&h=${h}&n=${n}`;
+	const url = `https://api.nmll.site/v1/minesweeper/generate?w=${w}&h=${h}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
@@ -130,7 +129,7 @@ function genTempBoard() {
 function genInfiniteBoard() {
 	resetBoard();
 	autoExtend = true;
-	const url = `https://api.nmll.site/v1/minesweeper/generate?w=20&h=20&n=60`;
+	const url = `https://api.nmll.site/v1/minesweeper/generate?w=20&h=20`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
