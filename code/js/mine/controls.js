@@ -188,7 +188,7 @@ function rightClick(tile) {
 				if (el?.state === 1) rightClick(el);
 			});
 	} else if (tile.state !== 3) {
-		if (tile.state !== 2) startAnimation({ x: tile.x, y: tile.y, sprite: "space.png", anim: { time: 450 * userConfig.animSpeed } });
+		if (tile.state !== 2) startAnimation({ x: tile.x, y: tile.y, sprite: "space.png", anim: { time: 250 * userConfig.animSpeed } });
 		startAnimation({ x: tile.x, y: tile.y, name: tile.state === 2 ? "removeflag" : "placeflag", sprite: "flag_.png" });
 		placeTile(tile.x, tile.y, { ...tile, state: tile.state === 2 ? 1 : 2 });
 	}

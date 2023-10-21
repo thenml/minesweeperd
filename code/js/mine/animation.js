@@ -24,14 +24,14 @@ function getAnimation(name, sprite, overrides) {
 		placeflag: {
 			from: {y: sprite.y - sprite.height / 3 , alpha: 0},
 			to: {y: sprite.y, alpha: 1},
-			time: 500,
-			ease: TWEEN.Easing.Cubic.Out,
+			time: 300,
+			ease: TWEEN.Easing.Quintic.Out,
 		},
 		removeflag: {
 			from: {y: sprite.y, alpha: 1},
 			to: {y: sprite.y - sprite.height / 3 , alpha: 0},
 			time: 500,
-			ease: TWEEN.Easing.Sinusoidal.In,
+			ease: TWEEN.Easing.Quadratic.In,
 		},
 		explosion: {
 			from: {_textureIndex: 0},

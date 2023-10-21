@@ -3,7 +3,7 @@ const debug_info = document.getElementById('debug-info');
 
 let userConfig = {
 	selectedTileset: 'generic_colored', // todo: combine tileset into one generated file
-	holdDelay: 150,
+	holdDelay: 100,
 	openDelay: 60,
 	showBackTiles: false,
 	invisibleZero: true,
