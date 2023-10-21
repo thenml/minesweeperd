@@ -33,8 +33,10 @@ function moveDrag(e) {
 }
 function endDrag(e) {
 	if (e.touches?.length === 1) return startDrag(e);
+	if (dragState <= 0) return dragState = -1;
 	dragState = -1;
 	camera.classList.remove('dragging');
+	return true;
 }
 function resizeWindow(e) {
 	if (e.touches) {
@@ -81,8 +83,12 @@ function handleMouseDown(e) {
 	}
 }
 function handleMouseUp(e) {
-	endDrag(e);
 	e.preventDefault();
+	if (endDrag(e) == true) {
+		clearTimeout(longPressTimer);
+		longPressTimer = undefined;
+		return;
+	}
 	if (longPressTimer && (e.button === 0 || e.touches?.length == 0)) {
 		clearTimeout(longPressTimer);
 		longPressTimer = undefined;
@@ -115,21 +121,30 @@ function nearestTiles(tile) {
 
 	return tiles;
 }
+function expandAround(x, y) {
+	const { x: chunkX, y: chunkY} = getChunkAt(x, y);
+	
+	for (j = -1; j < 2; j++) {
+		for (i = -1; i < 2; i++) {
+			if (!getTileAt((chunkX + i) * chunkWidth, (chunkY + j) * chunkHeight))
+				expandAt(chunkX + i, chunkY + j);
+		}
+	}
+}
 
 
 
 function leftClick(tile, startTile) {
 	if (dragState >= 1 || !tile) return;
 	if (tile.state >= 2) return; // exploded or flag
+	expandAround(tile.x, tile.y);
 
-	if (tile.data === 0) { // 0 tile recursion
+	if (tile.data === 0 && tile.state != 0) { // 0 tile recursion
 		tile.state = 0;
 		if (!startTile)
 			startTile = tile;
-		else { }
-		const delay = (Math.abs(tile.x - startTile.x) + Math.abs(tile.y - startTile.y)) * userConfig.openDelay;
+		const delay = (Math.abs(tile.x - startTile.x) + Math.abs(tile.y - startTile.y) -2) * userConfig.openDelay;
 		startAnimation({ x: tile.x, y: tile.y, name: "opentile", sprite: "space.png", delay });
-
 	}
 
 	if (!startTile)
@@ -150,7 +165,7 @@ function leftClick(tile, startTile) {
 			startAnimation({ x: tile.x, y: tile.y, name: "explosion", sprite: "explosion.gif" });
 		}
 		else {
-			const delay = (Math.abs(tile.x - startTile.x) + Math.abs(tile.y - startTile.y) - 2) * userConfig.openDelay;
+			const delay = (Math.abs(tile.x - startTile.x) + Math.abs(tile.y - startTile.y) -2) * userConfig.openDelay;
 			placeTile(tile.x, tile.y, { ...tile, state: 0 }, { animation: { x: tile.x, y: tile.y, name: "opentile", sprite: "space.png", delay } });
 		}
 }
@@ -173,7 +188,7 @@ function rightClick(tile) {
 				if (el?.state === 1) rightClick(el);
 			});
 	} else if (tile.state !== 3) {
-		if (tile.state !== 2) startAnimation({ x: tile.x, y: tile.y, sprite: "space.png", anim: { time: 450 } });
+		if (tile.state !== 2) startAnimation({ x: tile.x, y: tile.y, sprite: "space.png", anim: { time: 450 * userConfig.animSpeed } });
 		startAnimation({ x: tile.x, y: tile.y, name: tile.state === 2 ? "removeflag" : "placeflag", sprite: "flag_.png" });
 		placeTile(tile.x, tile.y, { ...tile, state: tile.state === 2 ? 1 : 2 });
 	}
@@ -211,3 +226,25 @@ app.ticker.add(() => {
 		updateVisibleTiles();
 	} else resizingVelocity = 0
 });
+
+
+// Handle window resize
+window.addEventListener('resize', () => {
+	app.renderer.resize(window.innerWidth, window.innerHeight);
+	cameraX += (backgroundTiles.width - camera.offsetWidth) / 2;
+	cameraY += (backgroundTiles.height - camera.offsetHeight) / 2;
+	backgroundTiles.width = camera.offsetWidth;
+	backgroundTiles.height = camera.offsetHeight;
+	updateVisibleTiles();
+});
+
+
+document.addEventListener("fullscreenchange", (e) => {
+	if (document.fullscreenElement == camera.parentElement) {
+		camera.parentElement.classList.add("fullscreen");
+		updateVisibleTiles();
+  } else {
+		camera.parentElement.classList.remove("fullscreen");
+		updateVisibleTiles();
+  }
+})
