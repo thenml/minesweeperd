@@ -137,7 +137,7 @@ function expandAround(x, y) {
 function leftClick(tile, startTile) {
 	if (dragState >= 1 || !tile) return;
 	if (tile.state >= 2) return; // exploded or flag
-	expandAround(tile.x, tile.y);
+	// expandAround(tile.x, tile.y);
 
 	if (tile.data === 0 && tile.state != 0) { // 0 tile recursion
 		tile.state = 0;
