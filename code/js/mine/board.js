@@ -110,6 +110,29 @@ function genTempBoard() {
 }
 
 
-function encodeBoard(x, y) {
-	return '';
+function encodeBoardBorder(chunkX, chunkY) {
+	let result = '';
+	for (let y = - 1; y <= chunkHeight; y++) {
+		for (let x = - 1; x <= chunkWidth; x++) {
+			if (x === -1 || x === chunkWidth || y === -1 || y === chunkHeight) {
+				const tile = getTileAt(x + chunkX * chunkWidth, y + chunkY * chunkHeight);
+				switch (tile?.data) {
+					case undefined: result += " "; break;
+					case "mine": result += "*"; break;
+					case "q": result += "q"; break;
+					case "wall": result += "-"; break;
+					default:
+						let c = tile.data;
+						if (tile.state === 0)
+							c = "sabcdefg"[c];
+						result += c;
+						break;
+				}
+			} else {
+				result+=' '
+			}
+		}
+		result+='/'
+	}
+	return result;
 }

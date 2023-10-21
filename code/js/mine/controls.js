@@ -56,7 +56,6 @@ function resizeWindow(e) {
 			updateVisibleTiles();
 		}
 	} else {
-		e.preventDefault();
 		resizingVelocity += e.deltaY > 0 ? -1 : 1;
 	}
 }
