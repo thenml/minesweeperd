@@ -20,8 +20,8 @@
 <style id="mine-theme">
 </style>
 <body style="text-align: center; overflow: hidden;">
-	<img style="height: 64px; margin: 24px auto; display: block;" src="https://media.tenor.com/v9E1MSawA4kAAAAC/monkey-bloons-td6.gif">
-	<button onclick="camera.parentElement.hidden = false; genTempBoard(); this.remove();">start</button>
+	<div style="position:absolute;left:0;right:0;top:0;bottom:0;display:flex;" onclick="genTempBoard(); this.remove();"><p style="width:100%;padding-top:50vh;">click to start</p></div>
+	<img style="height:64px;left:50%;position:absolute;transform:translateX(-50%);" src="https://media.tenor.com/v9E1MSawA4kAAAAC/monkey-bloons-td6.gif">
 	<main>
 		<div class="settings">
 			<button onclick="document.exitFullscreen()">x</button>
@@ -29,7 +29,6 @@
 		<div id="container"> </div>
 		<div class="settings">
 			<p id="debug-info"></p>
-			<button onclick="genTempBoard();">reset</button>
 			<button onclick="genBasicBoard({init: true});">new</button>
 			<button onclick="genDailyBoard();">daily</button>
 			<button onclick="genInfiniteBoard();">infinite</button>

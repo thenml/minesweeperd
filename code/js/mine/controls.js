@@ -229,7 +229,7 @@ app.ticker.add(() => {
 
 // Handle window resize
 window.addEventListener('resize', () => {
-	app.renderer.resize(window.innerWidth, window.innerHeight);
+	app.renderer.resize(camera.offsetWidth, camera.offsetHeight);
 	cameraX += (backgroundTiles.width - camera.offsetWidth) / 2;
 	cameraY += (backgroundTiles.height - camera.offsetHeight) / 2;
 	backgroundTiles.width = camera.offsetWidth;

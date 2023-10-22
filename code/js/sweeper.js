@@ -20,7 +20,8 @@ let tileSize = 16;
 let chunkWidth, chunkHeight;
 
 const app = new PIXI.Application({
-	resize: camera,
+	width: camera.offsetWidth,
+	height: camera.offsetHeight,
 	antialias: false,
 	backgroundColor: 0x333333,
 });
@@ -93,8 +94,6 @@ function getScreenPos(x, y, centered) {  return {
 		screenY: (y + (centered ? 0.5 : 0)) * tileSize - cameraY
 }}
 
-placeTile(0, 0, { data: 1 });
-
 // Function to update the visible tiles based on the camera position
 function updateVisibleTiles() {
 	const minX = Math.floor(cameraX / tileSize);
@@ -127,7 +126,6 @@ function updateVisibleTiles() {
 }
 
 
-camera.parentElement.hidden = true
 // const oldDraw = () => {
 // 	tilesContainer.removeChildren();
 // 	let culledTiles = [];
