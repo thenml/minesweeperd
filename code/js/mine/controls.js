@@ -61,7 +61,6 @@ function resizeWindow(e) {
 }
 function handleMouseDown(e) {
 	startDrag(e);
-	debug_info.textContent = e.touches?.length;
 	if (e.button === 0 || e.touches?.length === 1) {
 		longPressTimer = setTimeout(() => {
 			longPressTimer = undefined;
