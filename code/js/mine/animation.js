@@ -1,12 +1,12 @@
 const sounds = { // TODO combine audio files into one https://github.com/goldfire/howler.js#group-playback
-	opentile: new Howl({ src: ['/assets/sounds/tile.mp3'] }),
-	placeflag: new Howl({ src: ['/assets/sounds/flag.mp3'] }),
-	removeflag: new Howl({ src: ['/assets/sounds/flag.mp3'] }),
-	explosion: new Howl({ src: ['/assets/sounds/explode.mp3'] }),
+	opentile: new Howl({ src: ['assets/sounds/tile.mp3'] }),
+	placeflag: new Howl({ src: ['assets/sounds/flag.mp3'] }),
+	removeflag: new Howl({ src: ['assets/sounds/flag.mp3'] }),
+	explosion: new Howl({ src: ['assets/sounds/explode.mp3'] }),
 }
 
 const textures = {}
-PIXI.Assets.load('/assets/mine/explosion.json').then(() => {
+PIXI.Assets.load('assets/mine/explosion.json').then(() => {
 	textures.explosion = [];
 	for (let i = 0; i < 17; i++) {
 		textures.explosion.push(PIXI.Texture.from(`explosion-${i}.png`));

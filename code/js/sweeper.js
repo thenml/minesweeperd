@@ -13,7 +13,7 @@ let userConfig = {
 let autoExtend = false;
 
 function tileTexture(tile) {
-	return `/assets/mine/tiles/${userConfig.selectedTileset}/${tile}`;
+	return `assets/mine/tiles/${userConfig.selectedTileset}/${tile}`;
 }
 
 let tileSize = 16;
