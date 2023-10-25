@@ -19,24 +19,3 @@ function getCookie(name) {
   }
   return null;
 }
-
-async function hardReload() {
-	await fetch(window.location.href, {
-		headers: {
-			Pragma: 'no-cache',
-			Expires: '-1',
-			'Cache-Control': 'no-cache',
-		},
-	});
-	window.location.href = url;
-	window.location.reload();
-}
-
-fetch('https://api.nmll.site/v1/minesweeper/v')
-.then(r => r.json())
-.then(v => {
-	if (v.hash != getCookie('last_hash')) {   // get last git hash and reload if it does not match cached value
-		setCookie('last_hash', v.hash);         // should fix not matching html and code files on updates
-		hardReload();                           // but when switching to v1.0 should replace by query parameters
-	}                                         // TODO
-})
