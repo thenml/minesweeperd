@@ -23,8 +23,8 @@ function parseMinesweeperString(minesweeperString, options) {
 	let minY = chunkHeight;
 	let maxX = 0;
 	let maxY = 0;
-	for (let y = 0; y < chunkWidth; y++) {
-		for (let x = 0; x < chunkHeight; x++) {
+	for (let y = 0; y < chunkHeight; y++) {
+		for (let x = 0; x < chunkWidth; x++) {
 			let c = rows[y][x];
 			let tile;
 			if (options.extend && (x === 0 || x === chunkWidth - 1 || y === 0 || y === chunkHeight - 1))
@@ -100,7 +100,8 @@ function genBasicBoard(options) {
 		resetBoard();
 	const w = parseInt(document.getElementById('inp-width').value) || 20;
 	const h = parseInt(document.getElementById('inp-height').value) || 20;
-	const url = `https://api.nmll.site/v1/minesweeper/generate?w=${w}&h=${h}`;
+	const r = (parseInt(document.getElementById('inp-ratio').value) || 2) / 20;
+	const url = `https://api.nmll.site/v1/minesweeper/generate?w=${w}&h=${h}&r=${r}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
@@ -129,7 +130,8 @@ function genTempBoard() {
 function genInfiniteBoard() {
 	resetBoard();
 	autoExtend = true;
-	const url = `https://api.nmll.site/v1/minesweeper/generate?w=20&h=20`;
+	const r = (parseInt(document.getElementById('inp-ratio').value) || 2) / 20;
+	const url = `https://api.nmll.site/v1/minesweeper/generate?w=15&h=15&r=${r}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
@@ -184,9 +186,10 @@ app.ticker.add(() => {
 	if (generatingChunks.waitList.length > 0 && generatingChunks.idle) {
 		const { chunkX, chunkY } = generatingChunks.waitList.pop();
 		generatingChunks.idle = false;
-		const n = Math.floor(((chunkWidth + chunkHeight) / 2) ** 1.4);
 		const ap = encodeBoardBorder(chunkX, chunkY);
-		const url = `https://api.nmll.site/v1/minesweeper/generate?w=${chunkWidth + 2}&h=${chunkHeight + 2}&n=${n}&ap=${ap}`;
+		const r = (parseInt(document.getElementById('inp-ratio').value) || 2) / 20 + 
+			(chunkX + chunkY) / 100;
+		const url = `https://api.nmll.site/v1/minesweeper/generate?w=${chunkWidth + 2}&h=${chunkHeight + 2}&r=${r}&ap=${ap}`;
 		fetch(url, { method: "POST" })
 			.then(response => response.json())
 			.then(json => {
