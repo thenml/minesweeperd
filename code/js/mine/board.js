@@ -188,7 +188,7 @@ app.ticker.add(() => {
 		generatingChunks.idle = false;
 		const ap = encodeBoardBorder(chunkX, chunkY);
 		const r = (parseInt(document.getElementById('inp-ratio').value) || 2) / 20 + 
-			Math.abs(chunkX + chunkY) / 100;
+			(Math.abs(chunkX) + Math.abs(chunkY)) / 100;
 		const url = `https://api.nmll.site/v1/minesweeper/generate?w=${chunkWidth + 2}&h=${chunkHeight + 2}&r=${r}&ap=${ap}`;
 		fetch(url, { method: "POST" })
 			.then(response => response.json())
