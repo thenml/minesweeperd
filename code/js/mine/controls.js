@@ -109,8 +109,8 @@ function leftClick(tile, startTile) {
 		if (tile.data === "mine") {
 			placeTile(tile.x, tile.y, { ...tile, state: 3 });
 			startAnimation({ x: tile.x, y: tile.y, name: "explosion", sprite: "explosion.gif" });
-		}
-		else {
+			mine_count.textContent = parseInt(mine_count.textContent) - (autoExtend ? -1 : 1);
+		} else {
 			const delay = (Math.abs(tile.x - startTile.x) + Math.abs(tile.y - startTile.y) - 2) * userConfig.openDelay;
 			placeTile(tile.x, tile.y, { ...tile, state: 0 }, { animation: { x: tile.x, y: tile.y, name: "opentile", sprite: "space.png", delay } });
 		}
@@ -129,10 +129,15 @@ function rightClick(tile) {
 			tiles.forEach(el => {
 				if (el?.state === 1) rightClick(el);
 			});
-	} else if (tile.state !== 3) {
-		if (tile.state !== 2) startAnimation({ x: tile.x, y: tile.y, sprite: "space.png", anim: { time: 250 * userConfig.animSpeed } });
-		startAnimation({ x: tile.x, y: tile.y, name: tile.state === 2 ? "removeflag" : "placeflag", sprite: "flag_.png" });
-		placeTile(tile.x, tile.y, { ...tile, state: tile.state === 2 ? 1 : 2 });
+	} else if (tile.state === 1) {
+		startAnimation({ x: tile.x, y: tile.y, sprite: "space.png", anim: { time: 250 * userConfig.animSpeed } });
+		startAnimation({ x: tile.x, y: tile.y, name: "placeflag", sprite: "flag_.png" });
+		placeTile(tile.x, tile.y, { ...tile, state: 2 });
+		mine_count.textContent = parseInt(mine_count.textContent) - (autoExtend ? -1 : 1);
+	}	else if (tile.state === 2) {
+		startAnimation({ x: tile.x, y: tile.y, name: "removeflag", sprite: "flag_.png" });
+		placeTile(tile.x, tile.y, { ...tile, state: 1 });
+		mine_count.textContent = parseInt(mine_count.textContent) + (autoExtend ? -1 : 1);
 	}
 }
 

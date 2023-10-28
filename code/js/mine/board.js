@@ -50,7 +50,10 @@ function parseMinesweeperString(minesweeperString, options) {
 
 			else
 				switch (c) {
-					case "*": tile.data = "mine"; break;
+					case "*": 
+					tile.data = "mine";
+					if (options.border) mine_count.textContent = parseInt(mine_count.textContent) + 1;
+					break;
 					case "q": tile.data = "q"; break;
 					case "-": tile.data = "wall"; tile.state = 0; break;
 					default: break;
@@ -94,6 +97,8 @@ function resetBoard() {
 	chunks = {};
 	tilesContainer.removeChildren();
 	animationContainer.removeChildren();
+	mine_count.textContent = 0;
+	mine_count.parentElement.firstElementChild.src = tileTexture("mine.png");
 }
 function genBasicBoard(options) {
 	if (options?.init)
@@ -138,6 +143,7 @@ function genInfiniteBoard() {
 			parseMinesweeperString(json.sweeper, { init: true, border: false });
 			updateVisibleTiles();
 			expandBoardAroundTile(0, 0);
+			mine_count.parentElement.firstElementChild.src = tileTexture("flag_.png");
 		});
 }
 

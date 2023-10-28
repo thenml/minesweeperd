@@ -1,5 +1,6 @@
 const camera = document.getElementById('container');
 const debug_info = document.getElementById('debug-info');
+const mine_count = document.getElementById('mine-count');
 
 let userConfig = {
 	selectedTileset: 'generic_colored', // todo: combine tileset into one generated file
